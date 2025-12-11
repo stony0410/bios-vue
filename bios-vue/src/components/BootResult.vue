@@ -1,45 +1,43 @@
 <template>
-  <div class="os-screen">
-    <h2>OS Loading...</h2>
+  <div class="boot-result">
+    <h2>
+      {{
+        bootSequence[0] === "USB-HDD"
+          ? "Booting from USB..."
+          : "Booting from HDD..."
+      }}
+    </h2>
 
-    <p>Boot Order Used:</p>
-    <ul>
-      <li v-for="item in bootSequence" :key="item">{{ item }}</li>
-    </ul>
-
-    <p>[Enter] Reboot</p>
+    <p>Press Enter to reboot</p>
   </div>
 </template>
 
 <script>
 export default {
-  name: "BootResult",
-
   props: ["bootSequence"],
 
   mounted() {
-    window.addEventListener("keydown", this.keyHandler)
+    window.addEventListener("keydown", this.keyHandler);
   },
 
   beforeUnmount() {
-    window.removeEventListener("keydown", this.keyHandler)
+    window.removeEventListener("keydown", this.keyHandler);
   },
 
   methods: {
     keyHandler(e) {
-      if (e.key === "Enter") {
-        this.$emit("reboot")
-      }
+      if (e.key === "Enter") this.$emit("reboot");
     }
   }
-}
+};
 </script>
 
 <style>
-.os-screen {
-  background: #003300;
+.boot-result {
+  background: black;
   color: white;
   height: 100vh;
-  padding: 20px;
+  font-family: monospace;
+  padding: 40px;
 }
 </style>

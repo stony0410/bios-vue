@@ -1,90 +1,85 @@
 <template>
   <div class="boot-seq">
-    <h2>Boot Sequence Settings</h2>
+    <h2>Boot Priority</h2>
 
     <ul>
       <li
         v-for="(item, index) in list"
         :key="item"
-        :style="{ color: index === selected ? 'yellow' : 'white' }"
+        :class="{ selected: index === selected }"
       >
-        {{ item }}
+        Boot Option #{{ index + 1 }} : {{ item }}
       </li>
     </ul>
 
-    <p>↑ ↓ 選擇裝置</p>
-    <p>+ 往上移</p>
-    <p>- 往下移</p>
-    <p>[ESC] 回到 BIOS 主選單</p>
+    <p>[↑/↓] Move Selection</p>
+    <p>[+/-] Change Order</p>
+    <p>[ESC] Back to BIOS</p>
   </div>
 </template>
 
 <script>
 export default {
-  name: "BootSequence",
-
   props: ["bootSequence"],
 
   data() {
     return {
       list: [...this.bootSequence],
       selected: 0
-    }
+    };
   },
 
   mounted() {
-    window.addEventListener("keydown", this.keyHandler)
+    window.addEventListener("keydown", this.keyHandler);
   },
 
   beforeUnmount() {
-    window.removeEventListener("keydown", this.keyHandler)
+    window.removeEventListener("keydown", this.keyHandler);
   },
 
   methods: {
     keyHandler(e) {
-      // 選擇上下移動
-      if (e.key === "ArrowUp" && this.selected > 0) {
-        this.selected--
-      } else if (e.key === "ArrowDown" && this.selected < this.list.length - 1) {
-        this.selected++
-      }
+      if (e.key === "ArrowUp" && this.selected > 0) this.selected--;
 
-      // + 往上
-      else if (e.key === "+") {
+      if (e.key === "ArrowDown" && this.selected < this.list.length - 1)
+        this.selected++;
+
+      if (e.key === "+") {
         if (this.selected > 0) {
-          var temp = this.list[this.selected]
-          this.list[this.selected] = this.list[this.selected - 1]
-          this.list[this.selected - 1] = temp
-          this.selected--
-          this.$emit("update-sequence", this.list)
+          const t = this.list[this.selected];
+          this.list[this.selected] = this.list[this.selected - 1];
+          this.list[this.selected - 1] = t;
+          this.selected--;
+          this.$emit("update-sequence", this.list);
         }
       }
 
-      // - 往下
-      else if (e.key === "-") {
+      if (e.key === "-") {
         if (this.selected < this.list.length - 1) {
-          var t = this.list[this.selected]
-          this.list[this.selected] = this.list[this.selected + 1]
-          this.list[this.selected + 1] = t
-          this.selected++
-          this.$emit("update-sequence", this.list)
+          const t = this.list[this.selected];
+          this.list[this.selected] = this.list[this.selected + 1];
+          this.list[this.selected + 1] = t;
+          this.selected++;
+          this.$emit("update-sequence", this.list);
         }
       }
 
-      // ESC 回 BIOS
-      else if (e.key === "Escape") {
-        this.$emit("back")
-      }
+      if (e.key === "Escape") this.$emit("back");
     }
   }
-}
+};
 </script>
 
 <style>
 .boot-seq {
-  background: #000066;
-  color: white;
+  background: #001a4d;
   height: 100vh;
+  color: white;
   padding: 20px;
+  font-family: monospace;
+}
+
+.selected {
+  color: yellow;
 }
 </style>
