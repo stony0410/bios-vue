@@ -1,40 +1,29 @@
-<template>
-  <div class="boot-screen">
-    <h1>American Megatrends</h1>
-    <p>Initializing USB Controllers...</p>
-    <p>Detecting Storage Devices...</p>
-    <br />
-    <p class="hint">Press <b>DEL</b> to enter Setup</p>
-  </div>
-</template>
-
 <script>
 export default {
+  methods: {
+    keyHandler(e) {
+      // 進 BIOS
+      if (e.key === "Delete") {
+        this.$emit("enter-bios")
+      }
+
+      // 開機跑完 → 進 OS
+      if (e.key === "Enter") {
+        this.$emit("boot-finished")
+      }
+    }
+  },
+
   mounted() {
-    const self = this;
-
-    // 自動進入 OS（丙級開機流程）
-    setTimeout(function () {
-      self.$emit("boot-finished");
-    }, 3000);
-
-    // 監聽 DEL
-    window.addEventListener("keydown", this.keyHandler);
+    window.addEventListener("keydown", this.keyHandler)
   },
 
   beforeUnmount() {
-    window.removeEventListener("keydown", this.keyHandler);
-  },
-
-  methods: {
-    keyHandler(e) {
-      if (e.key === "Delete") {
-        this.$emit("enter-bios");
-      }
-    }
+    window.removeEventListener("keydown", this.keyHandler)
   }
-};
+}
 </script>
+
 
 <style>
 .boot-screen {
